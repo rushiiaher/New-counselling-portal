@@ -77,7 +77,7 @@ function GovHeader({ onPick }) {
         </div>
         <nav style={{ display: "flex", gap: 22 }}>
           {links.map((l, i) => (
-            <a key={l} href="#" onClick={(e) => e.preventDefault()} style={{ font: `${i === 0 ? 700 : 500} 13.5px ${T.body}`, color: i === 0 ? T.navy : T.inkSoft, textDecoration: "none", borderBottom: i === 0 ? `2px solid ${T.indiaSaffron}` : "2px solid transparent", paddingBottom: 4 }}>{l}</a>
+            <a key={l} href="#" onClick={(e) => { e.preventDefault(); if (i !== 0) onPick("student"); else window.scrollTo({top: 0, behavior: 'smooth'}); }} style={{ font: `${i === 0 ? 700 : 500} 13.5px ${T.body}`, color: i === 0 ? T.navy : T.inkSoft, textDecoration: "none", borderBottom: i === 0 ? `2px solid ${T.indiaSaffron}` : "2px solid transparent", paddingBottom: 4 }}>{l}</a>
           ))}
         </nav>
         <button onClick={() => document.getElementById("portals")?.scrollIntoView({ behavior: "smooth" })} style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "10px 18px", borderRadius: 10, border: "none", background: T.indiaSaffron, color: "#3a2400", cursor: "pointer", font: `700 13.5px ${T.body}` }}>
