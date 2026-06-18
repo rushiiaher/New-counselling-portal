@@ -16,6 +16,7 @@ const ROLE_USER = {
 function StudentFrame({ session, onLogout }) {
   const T = window.THEME;
   const ref = useRefPt(null);
+  const [isMobileView, setIsMobileView] = useStatePt(true);
 
   useEffectPt(() => {
     function fit() {
@@ -24,27 +25,41 @@ function StudentFrame({ session, onLogout }) {
       const s = Math.min(1, (window.innerWidth - 32) / w, (window.innerHeight - 120) / h);
       el.style.transform = `scale(${s})`;
     }
-    fit(); window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, []);
+    if (isMobileView) {
+      fit(); window.addEventListener("resize", fit);
+      return () => window.removeEventListener("resize", fit);
+    }
+  }, [isMobileView]);
+
+  const btnStyle = {
+    display: "inline-flex", alignItems: "center", gap: 7,
+    padding: "9px 15px", borderRadius: 11, border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.08)",
+    color: "#fff", cursor: "pointer", font: `600 13px ${T.body}`, backdropFilter: "blur(6px)",
+  };
 
   return (
     <div style={{ height: "100vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "radial-gradient(circle at 30% 20%, #2a3650 0%, #1a2230 60%, #141a26 100%)", overflow: "hidden", position: "relative" }}>
-      <button onClick={onLogout} style={{
-        position: "absolute", top: 18, left: 18, zIndex: 50, display: "inline-flex", alignItems: "center", gap: 7,
-        padding: "9px 15px", borderRadius: 11, border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.08)",
-        color: "#fff", cursor: "pointer", font: `600 13px ${T.body}`, backdropFilter: "blur(6px)",
-      }}>
-        <window.Icon name="logout" size={16} /> Switch portal
-      </button>
-      <div style={{ position: "absolute", top: 20, right: 20, zIndex: 50, display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.7)", font: `500 12px ${T.body}` }}>
-        <window.Icon name="phone_iphone" size={15} /> Student app
+      <div style={{ position: "absolute", top: 18, left: 18, zIndex: 50, display: "flex", gap: 12 }}>
+        <button onClick={onLogout} style={btnStyle}>
+          <window.Icon name="logout" size={16} /> Switch portal
+        </button>
+        <button onClick={() => setIsMobileView(!isMobileView)} style={btnStyle}>
+          <window.Icon name={isMobileView ? "desktop_windows" : "phone_iphone"} size={16} />
+          {isMobileView ? "Desktop View" : "Mobile View"}
+        </button>
       </div>
-      <div ref={ref} style={{ transformOrigin: "center center" }}>
-        <window.AndroidDevice>
+      
+      {isMobileView ? (
+        <div ref={ref} style={{ transformOrigin: "center center" }}>
+          <window.AndroidDevice>
+            <window.App session={session} />
+          </window.AndroidDevice>
+        </div>
+      ) : (
+        <div style={{ width: "100%", maxWidth: 900, height: "100vh", background: "#fff", boxShadow: "0 0 40px rgba(0,0,0,0.5)", position: "relative", display: "flex", flexDirection: "column" }}>
           <window.App session={session} />
-        </window.AndroidDevice>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
